@@ -6,10 +6,7 @@ import {CollectionCard} from '~/components/CollectionCard';
 import {MockShopNotice} from '~/components/MockShopNotice';
 import {CTABand} from '~/components/CTABand';
 import {ArrowIcon} from '~/components/icons';
-import {
-  COLLECTION_CARD_FRAGMENT,
-  PRODUCT_CARD_FRAGMENT,
-} from '~/lib/fragments';
+import {COLLECTION_CARD_FRAGMENT, PRODUCT_CARD_FRAGMENT} from '~/lib/fragments';
 import {seoMeta} from '~/lib/seo';
 import {site, stats} from '~/lib/site';
 
@@ -68,10 +65,9 @@ export default function Homepage() {
     <>
       {isShopLinked ? null : <MockShopNotice />}
 
-      <section className="relative overflow-hidden border-b border-border bg-ink-2">
-        <div className="grain absolute inset-0" aria-hidden />
+      <section className="relative overflow-hidden bg-ink">
         <div className="dusk absolute inset-0" aria-hidden />
-        <div className="container-x relative pt-16 pb-14 md:pt-24 md:pb-20">
+        <div className="container-x relative pt-16 pb-24 md:pt-24 md:pb-32">
           <p className="eyebrow">{site.name} · Online shop</p>
           <h1 className="mt-4 max-w-4xl text-5xl md:text-7xl">
             Parts that <span className="text-stroke">pull their weight.</span>
@@ -98,16 +94,22 @@ export default function Homepage() {
               Browse collections
             </Link>
           </div>
-          <dl className="mt-14 grid grid-cols-2 gap-6 border-t border-border pt-8 md:grid-cols-4">
-            {stats.map((stat) => (
-              <div key={stat.label} className="flex flex-col-reverse gap-1">
-                <dt className="text-xs uppercase tracking-wide text-muted">
-                  {stat.label}
-                </dt>
-                <dd className="font-display text-3xl text-fg">{stat.value}</dd>
+        </div>
+      </section>
+
+      {/* Same stats strip as the main site home page. */}
+      <section className="border-y border-border bg-ink-2">
+        <div className="container-x grid grid-cols-2 lg:grid-cols-4">
+          {stats.map((stat) => (
+            <div key={stat.label} className="px-2 py-8 text-center">
+              <div className="font-display text-3xl font-bold text-sand md:text-4xl">
+                {stat.value}
               </div>
-            ))}
-          </dl>
+              <div className="mt-1 text-xs uppercase tracking-widest text-muted">
+                {stat.label}
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 
