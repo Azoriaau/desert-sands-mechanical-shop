@@ -19,7 +19,7 @@ import {
   type MenuGroup,
 } from '~/lib/menu';
 import {seoMeta} from '~/lib/seo';
-import {site, stats} from '~/lib/site';
+import {site} from '~/lib/site';
 
 export const meta: Route.MetaFunction = () => seoMeta({path: '/'});
 
@@ -85,7 +85,7 @@ export default function Homepage() {
     <>
       {isShopLinked ? null : <MockShopNotice />}
 
-      <section className="relative overflow-hidden bg-ink">
+      <section className="relative overflow-hidden border-b border-border bg-ink">
         <div className="dusk absolute inset-0" aria-hidden />
         <div className="container-x relative pt-16 pb-24 md:pt-24 md:pb-32">
           <p className="eyebrow">{site.name} · Online shop</p>
@@ -120,22 +120,6 @@ export default function Homepage() {
               </Link>
             )}
           </div>
-        </div>
-      </section>
-
-      {/* Same stats strip as the main site home page. */}
-      <section className="border-y border-border bg-ink-2">
-        <div className="container-x grid grid-cols-2 lg:grid-cols-4">
-          {stats.map((stat) => (
-            <div key={stat.label} className="px-2 py-8 text-center">
-              <div className="font-display text-3xl font-bold text-sand md:text-4xl">
-                {stat.value}
-              </div>
-              <div className="mt-1 text-xs uppercase tracking-widest text-muted">
-                {stat.label}
-              </div>
-            </div>
-          ))}
         </div>
       </section>
 

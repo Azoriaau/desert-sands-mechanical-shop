@@ -130,10 +130,9 @@ export function Header({cart, menu}: HeaderProps) {
 
       {menu.groups.length > 0 && (
         <div className="hidden border-t border-border/60 lg:block">
-          {/* Left padding clears the logo, which hangs below the main row. */}
           <nav
             aria-label="Vehicles and brands"
-            className="container-x relative flex h-11 items-center gap-1 lg:pl-40"
+            className="container-x relative flex h-11 items-center justify-center gap-1"
           >
             {menu.groups.map((group) => (
               <ShopMenuDropdown
