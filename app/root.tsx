@@ -14,6 +14,7 @@ import {
 import type {Route} from './+types/root';
 import favicon from '~/assets/favicon.svg';
 import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
+import {parseShopMenu, SHOP_MENU_HANDLE, storeHosts} from '~/lib/menu';
 import appStyles from '~/styles/app.css?url';
 import tailwindCss from './styles/tailwind.css?url';
 import {PageLayout} from './components/PageLayout';
@@ -89,11 +90,21 @@ async function loadCriticalData({context}: Route.LoaderArgs) {
   const [header] = await Promise.all([
     storefront.query(HEADER_QUERY, {
       cache: storefront.CacheLong(),
+      variables: {headerMenuHandle: SHOP_MENU_HANDLE},
     }),
     // Add other queries here, so that they are loaded in parallel
   ]);
 
-  return {header};
+  return {
+    header,
+    shopMenu: parseShopMenu(
+      header.menu,
+      storeHosts(
+        context.env.PUBLIC_STORE_DOMAIN,
+        header.shop.primaryDomain.url,
+      ),
+    ),
+  };
 }
 
 /**

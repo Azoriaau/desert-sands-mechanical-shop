@@ -301,9 +301,32 @@ export type ShopFragment = Pick<
   }>;
 };
 
+export type MenuItemFragment = Pick<
+  StorefrontAPI.MenuItem,
+  'id' | 'title' | 'type' | 'url'
+>;
+
+export type MenuFragment = Pick<
+  StorefrontAPI.Menu,
+  'id' | 'title' | 'handle'
+> & {
+  items: Array<
+    Pick<StorefrontAPI.MenuItem, 'id' | 'title' | 'type' | 'url'> & {
+      items: Array<
+        Pick<StorefrontAPI.MenuItem, 'id' | 'title' | 'type' | 'url'> & {
+          items: Array<
+            Pick<StorefrontAPI.MenuItem, 'id' | 'title' | 'type' | 'url'>
+          >;
+        }
+      >;
+    }
+  >;
+};
+
 export type HeaderQueryVariables = StorefrontAPI.Exact<{
   country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
   language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
+  headerMenuHandle: StorefrontAPI.Scalars['String']['input'];
 }>;
 
 export type HeaderQuery = {
@@ -315,6 +338,21 @@ export type HeaderQuery = {
       }>;
     }>;
   };
+  menu?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Menu, 'id' | 'title' | 'handle'> & {
+      items: Array<
+        Pick<StorefrontAPI.MenuItem, 'id' | 'title' | 'type' | 'url'> & {
+          items: Array<
+            Pick<StorefrontAPI.MenuItem, 'id' | 'title' | 'type' | 'url'> & {
+              items: Array<
+                Pick<StorefrontAPI.MenuItem, 'id' | 'title' | 'type' | 'url'>
+              >;
+            }
+          >;
+        }
+      >;
+    }
+  >;
 };
 
 export type PolicyLinkFragment = Pick<
@@ -1205,7 +1243,7 @@ export type PredictiveSearchQuery = {
 };
 
 interface GeneratedQueryTypes {
-  '#graphql\n  fragment Shop on Shop {\n    id\n    name\n    description\n    primaryDomain {\n      url\n    }\n    brand {\n      logo {\n        image {\n          url\n        }\n      }\n    }\n  }\n  query Header($country: CountryCode, $language: LanguageCode)\n    @inContext(language: $language, country: $country) {\n    shop {\n      ...Shop\n    }\n  }\n': {
+  '#graphql\n  fragment Shop on Shop {\n    id\n    name\n    description\n    primaryDomain {\n      url\n    }\n    brand {\n      logo {\n        image {\n          url\n        }\n      }\n    }\n  }\n  fragment MenuItem on MenuItem {\n    id\n    title\n    type\n    url\n  }\n  fragment Menu on Menu {\n    id\n    title\n    handle\n    items {\n      ...MenuItem\n      items {\n        ...MenuItem\n        items {\n          ...MenuItem\n        }\n      }\n    }\n  }\n  query Header(\n    $country: CountryCode\n    $language: LanguageCode\n    $headerMenuHandle: String!\n  ) @inContext(language: $language, country: $country) {\n    shop {\n      ...Shop\n    }\n    menu(handle: $headerMenuHandle) {\n      ...Menu\n    }\n  }\n': {
     return: HeaderQuery;
     variables: HeaderQueryVariables;
   };
@@ -1213,7 +1251,7 @@ interface GeneratedQueryTypes {
     return: FooterQuery;
     variables: FooterQueryVariables;
   };
-  '#graphql\n  query HomeCollections($country: CountryCode, $language: LanguageCode)\n    @inContext(country: $country, language: $language) {\n    collections(first: 12, sortKey: TITLE) {\n      nodes {\n        ...CollectionCard\n      }\n    }\n  }\n  #graphql\n  fragment CollectionCard on Collection {\n    id\n    handle\n    title\n    description\n    image {\n      id\n      url\n      altText\n      width\n      height\n    }\n  }\n\n': {
+  '#graphql\n  query HomeCollections($country: CountryCode, $language: LanguageCode)\n    @inContext(country: $country, language: $language) {\n    collections(first: 50, sortKey: TITLE) {\n      nodes {\n        ...CollectionCard\n      }\n    }\n  }\n  #graphql\n  fragment CollectionCard on Collection {\n    id\n    handle\n    title\n    description\n    image {\n      id\n      url\n      altText\n      width\n      height\n    }\n  }\n\n': {
     return: HomeCollectionsQuery;
     variables: HomeCollectionsQueryVariables;
   };

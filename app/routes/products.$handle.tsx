@@ -136,7 +136,7 @@ export default function Product() {
           title={title}
         />
 
-        <div className="lg:sticky lg:top-28 lg:self-start">
+        <div className="lg:sticky lg:top-36 lg:self-start">
           {vendor && <p className="eyebrow">{vendor}</p>}
           <h1 className="mt-3 text-3xl md:text-5xl">{title}</h1>
           <ProductPrice

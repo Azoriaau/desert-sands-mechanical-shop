@@ -39,11 +39,11 @@ Other scripts: `npm run build`, `npm run preview`, `npm run lint`, `npm run type
 
 ## Keeping in step with the main site
 
-| Shop file | Main site file |
-| --- | --- |
-| `app/lib/site.ts` (business details, nav) | `lib/site.ts` |
-| `app/styles/tailwind.css` (`@theme` tokens, `.btn`, `.card`, `.eyebrow`) | `app/globals.css` |
-| `app/components/Header.tsx`, `Footer.tsx`, `Logo.tsx`, `icons.tsx`, `PageHero.tsx`, `CTABand.tsx` | `components/` |
+| Shop file                                                                                         | Main site file    |
+| ------------------------------------------------------------------------------------------------- | ----------------- |
+| `app/lib/site.ts` (business details, nav)                                                         | `lib/site.ts`     |
+| `app/styles/tailwind.css` (`@theme` tokens, `.btn`, `.card`, `.eyebrow`)                          | `app/globals.css` |
+| `app/components/Header.tsx`, `Footer.tsx`, `Logo.tsx`, `icons.tsx`, `PageHero.tsx`, `CTABand.tsx` | `components/`     |
 
 ## Customer accounts
 
@@ -51,3 +51,14 @@ The `/account` routes from the Hydrogen skeleton are kept but not linked from th
 navigation. They need the Customer Account API enabled for the storefront in
 Shopify admin before they work; see the
 [Hydrogen docs](https://shopify.dev/docs/storefronts/headless/building-with-the-customer-account-api/hydrogen).
+
+## Navigation menus
+
+The shop bar under the header (Make / Model, Catalogue) and the "Shop by" sections on the home page are read live from the Shopify **Main menu** (admin → Online Store → Navigation → Main menu), the same menu the old theme used. Nothing is hard-coded, so edits in admin show on the next request:
+
+- A top-level item with sub-items becomes a dropdown. Its own link can be `#`.
+- The first group whose sub-items have children of their own (Make / Model → Toyota → N80 Hilux …) is the vehicle menu: each make is a column, the make's own link is the "All Toyota" view, and the models beneath link to their collections.
+- Any other group (Catalogue) renders as a flat list in the header and as logo cards on the home page, using each linked collection's image.
+- Top-level items without sub-items (Home, Contact) are skipped; the main nav already covers them.
+
+The menu handle is `main-menu` (`SHOP_MENU_HANDLE` in `app/lib/menu.ts`).

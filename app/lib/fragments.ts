@@ -232,10 +232,36 @@ export const HEADER_QUERY = `#graphql
       }
     }
   }
-  query Header($country: CountryCode, $language: LanguageCode)
-    @inContext(language: $language, country: $country) {
+  fragment MenuItem on MenuItem {
+    id
+    title
+    type
+    url
+  }
+  fragment Menu on Menu {
+    id
+    title
+    handle
+    items {
+      ...MenuItem
+      items {
+        ...MenuItem
+        items {
+          ...MenuItem
+        }
+      }
+    }
+  }
+  query Header(
+    $country: CountryCode
+    $language: LanguageCode
+    $headerMenuHandle: String!
+  ) @inContext(language: $language, country: $country) {
     shop {
       ...Shop
+    }
+    menu(handle: $headerMenuHandle) {
+      ...Menu
     }
   }
 ` as const;

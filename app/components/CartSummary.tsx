@@ -21,7 +21,7 @@ export function CartSummary({cart, layout}: CartSummaryProps) {
       className={
         isAside
           ? 'shrink-0 border-t border-border bg-ink-2 p-5'
-          : 'card p-6 lg:sticky lg:top-28'
+          : 'card p-6 lg:sticky lg:top-36'
       }
     >
       <h2 id={summaryId} className="text-xl">

@@ -15,6 +15,7 @@ import {
 } from '~/components/SearchFormPredictive';
 import {SearchResultsPredictive} from '~/components/SearchResultsPredictive';
 import {ArrowIcon} from '~/components/icons';
+import type {ShopMenu} from '~/lib/menu';
 
 interface PageLayoutProps {
   cart: Promise<CartApiQueryFragment | null>;
@@ -22,10 +23,16 @@ interface PageLayoutProps {
   header: HeaderQuery;
   isLoggedIn: Promise<boolean>;
   publicStoreDomain: string;
+  shopMenu: ShopMenu;
   children?: React.ReactNode;
 }
 
-export function PageLayout({cart, children = null, footer}: PageLayoutProps) {
+export function PageLayout({
+  cart,
+  children = null,
+  footer,
+  shopMenu,
+}: PageLayoutProps) {
   return (
     <Aside.Provider>
       <a
@@ -34,7 +41,7 @@ export function PageLayout({cart, children = null, footer}: PageLayoutProps) {
       >
         Skip to content
       </a>
-      <Header cart={cart} />
+      <Header cart={cart} menu={shopMenu} />
       <main id="main" className="flex-1">
         {children}
       </main>
