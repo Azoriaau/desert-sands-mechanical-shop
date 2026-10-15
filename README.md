@@ -54,11 +54,11 @@ Shopify admin before they work; see the
 
 ## Navigation menus
 
-The shop bar under the header (Make / Model, Catalogue) and the "Shop by" sections on the home page are read live from the Shopify **Main menu** (admin → Online Store → Navigation → Main menu), the same menu the old theme used. Nothing is hard-coded, so edits in admin show on the next request:
+The shop bar under the header (Make / Model, Catalogue) and the "Shop by" vehicle rows on the home page are read live from the Shopify **Main menu** (admin → Online Store → Navigation → Main menu), the same menu the old theme used. Nothing is hard-coded, so edits in admin show on the next request:
 
 - A top-level item with sub-items becomes a dropdown. Its own link can be `#`.
 - The first group whose sub-items have children of their own (Make / Model → Toyota → N80 Hilux …) is the vehicle menu: each make is a column, the make's own link is the "All Toyota" view, and the models beneath link to their collections.
-- Any other group (Catalogue) renders as a flat list in the header and as logo cards on the home page, using each linked collection's image.
+- Any other group (Catalogue) renders as a flat dropdown in the header.
 - Top-level items without sub-items (Home, Contact) are skipped; the main nav already covers them.
 
 The menu handle is `main-menu` (`SHOP_MENU_HANDLE` in `app/lib/menu.ts`).
