@@ -1,0 +1,224 @@
+import {Await, Link, useLoaderData} from 'react-router';
+import type {Route} from './+types/_index';
+import {Suspense} from 'react';
+import {ProductGridSkeleton, ProductItem} from '~/components/ProductItem';
+import {CollectionCard} from '~/components/CollectionCard';
+import {MockShopNotice} from '~/components/MockShopNotice';
+import {CTABand} from '~/components/CTABand';
+import {ArrowIcon} from '~/components/icons';
+import {
+  COLLECTION_CARD_FRAGMENT,
+  PRODUCT_CARD_FRAGMENT,
+} from '~/lib/fragments';
+import {seoMeta} from '~/lib/seo';
+import {site, stats} from '~/lib/site';
+
+export const meta: Route.MetaFunction = () => seoMeta({path: '/'});
+
+export async function loader(args: Route.LoaderArgs) {
+  // Start fetching non-critical data without blocking time to first byte
+  const deferredData = loadDeferredData(args);
+
+  // Await the critical data required to render initial state of the page
+  const criticalData = await loadCriticalData(args);
+
+  return {...deferredData, ...criticalData};
+}
+
+/**
+ * Load data necessary for rendering content above the fold. This is the critical data
+ * needed to render the page. If it's unavailable, the whole page should 400 or 500 error.
+ */
+async function loadCriticalData({context}: Route.LoaderArgs) {
+  const [{collections}] = await Promise.all([
+    context.storefront.query(HOME_COLLECTIONS_QUERY),
+    // Add other queries here, so that they are loaded in parallel
+  ]);
+
+  return {
+    isShopLinked: Boolean(context.env.PUBLIC_STORE_DOMAIN),
+    collections: collections.nodes,
+  };
+}
+
+/**
+ * Load data for rendering content below the fold. This data is deferred and will be
+ * fetched after the initial page load. If it's unavailable, the page should still 200.
+ * Make sure to not throw any errors here, as it will cause the page to 500.
+ */
+function loadDeferredData({context}: Route.LoaderArgs) {
+  const latestProducts = context.storefront
+    .query(LATEST_PRODUCTS_QUERY)
+    .catch((error: Error) => {
+      // Log query errors, but don't throw them so the page can still render
+      console.error(error);
+      return null;
+    });
+
+  return {
+    latestProducts,
+  };
+}
+
+export default function Homepage() {
+  const {collections, latestProducts, isShopLinked} =
+    useLoaderData<typeof loader>();
+
+  return (
+    <>
+      {isShopLinked ? null : <MockShopNotice />}
+
+      <section className="relative overflow-hidden border-b border-border bg-ink-2">
+        <div className="grain absolute inset-0" aria-hidden />
+        <div className="dusk absolute inset-0" aria-hidden />
+        <div className="container-x relative pt-16 pb-14 md:pt-24 md:pb-20">
+          <p className="eyebrow">{site.name} · Online shop</p>
+          <h1 className="mt-4 max-w-4xl text-5xl md:text-7xl">
+            Parts that <span className="text-stroke">pull their weight.</span>
+          </h1>
+          <p className="mt-6 max-w-2xl text-lg text-muted">
+            Intercoolers, catch cans, airboxes, injectors and exhausts for
+            diesel 4WDs, chosen by the workshop that tunes them. Buy online, or
+            ask us to fit it in the workshop.
+          </p>
+          <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+            <Link
+              to="/collections/all"
+              prefetch="intent"
+              className="btn btn-primary"
+            >
+              Shop all products
+              <ArrowIcon className="h-4 w-4" />
+            </Link>
+            <Link
+              to="/collections"
+              prefetch="intent"
+              className="btn btn-outline"
+            >
+              Browse collections
+            </Link>
+          </div>
+          <dl className="mt-14 grid grid-cols-2 gap-6 border-t border-border pt-8 md:grid-cols-4">
+            {stats.map((stat) => (
+              <div key={stat.label} className="flex flex-col-reverse gap-1">
+                <dt className="text-xs uppercase tracking-wide text-muted">
+                  {stat.label}
+                </dt>
+                <dd className="font-display text-3xl text-fg">{stat.value}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </section>
+
+      <section className="container-x py-14 md:py-20">
+        <SectionHeading
+          eyebrow="Shop by"
+          title="Collection"
+          linkTo="/collections"
+          linkLabel="All collections"
+        />
+        {collections.length ? (
+          <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {collections.map((collection, index) => (
+              <CollectionCard
+                key={collection.id}
+                collection={collection}
+                loading={index < 4 ? 'eager' : 'lazy'}
+              />
+            ))}
+          </div>
+        ) : (
+          <p className="mt-8 text-muted">No collections yet.</p>
+        )}
+      </section>
+
+      <section className="border-y border-border bg-surface/40">
+        <div className="container-x py-14 md:py-20">
+          <SectionHeading
+            eyebrow="Fresh on the shelf"
+            title="Latest products"
+            linkTo="/collections/all"
+            linkLabel="All products"
+          />
+          <div className="mt-8">
+            <Suspense fallback={<ProductGridSkeleton />}>
+              <Await resolve={latestProducts}>
+                {(response) =>
+                  response?.products.nodes.length ? (
+                    <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+                      {response.products.nodes.map((product, index) => (
+                        <ProductItem
+                          key={product.id}
+                          product={product}
+                          loading={index < 4 ? 'eager' : 'lazy'}
+                        />
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-muted">No products yet.</p>
+                  )
+                }
+              </Await>
+            </Suspense>
+          </div>
+        </div>
+      </section>
+
+      <CTABand />
+    </>
+  );
+}
+
+function SectionHeading({
+  eyebrow,
+  title,
+  linkTo,
+  linkLabel,
+}: {
+  eyebrow: string;
+  title: string;
+  linkTo: string;
+  linkLabel: string;
+}) {
+  return (
+    <div className="flex flex-wrap items-end justify-between gap-4">
+      <div>
+        <p className="eyebrow">{eyebrow}</p>
+        <h2 className="mt-2 text-3xl md:text-4xl">{title}</h2>
+      </div>
+      <Link
+        to={linkTo}
+        prefetch="intent"
+        className="inline-flex items-center gap-1.5 font-display text-sm uppercase tracking-wide text-fg transition-colors hover:text-sand"
+      >
+        {linkLabel}
+        <ArrowIcon className="h-4 w-4" />
+      </Link>
+    </div>
+  );
+}
+
+const HOME_COLLECTIONS_QUERY = `#graphql
+  query HomeCollections($country: CountryCode, $language: LanguageCode)
+    @inContext(country: $country, language: $language) {
+    collections(first: 12, sortKey: TITLE) {
+      nodes {
+        ...CollectionCard
+      }
+    }
+  }
+  ${COLLECTION_CARD_FRAGMENT}
+` as const;
+
+const LATEST_PRODUCTS_QUERY = `#graphql
+  query LatestProducts($country: CountryCode, $language: LanguageCode)
+    @inContext(country: $country, language: $language) {
+    products(first: 8, sortKey: CREATED_AT, reverse: true) {
+      nodes {
+        ...ProductCard
+      }
+    }
+  }
+  ${PRODUCT_CARD_FRAGMENT}
+` as const;
