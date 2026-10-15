@@ -24,6 +24,10 @@ Until the project is linked to the store, the dev server uses Shopify's
 
 Other scripts: `npm run build`, `npm run preview`, `npm run lint`, `npm run typecheck`, `npm run codegen`.
 
+### Windows note
+
+`patches/` holds a small [patch-package](https://github.com/ds300/patch-package) fix for `@react-router/dev`, applied automatically on `npm install`. The plugin's internal child compiler watched `.react-router/types` with default settings, which on Windows kept directory handles open, so the plugin's own regeneration of that folder failed with `ENOTEMPTY` and took the dev server down on every route or `.env` change. The patch makes that watcher ignore `.react-router` and lets the folder deletes retry. `vite.config.ts` applies the same ignore to the main watcher, plus `dist`, so builds and deploys can clear it while dev is running. If `@react-router/dev` is upgraded, regenerate the patch with `npx patch-package @react-router/dev`, or drop it if upstream has fixed it.
+
 ## Linking the real store (one-off)
 
 1. In Shopify admin, install the **Hydrogen** sales channel.

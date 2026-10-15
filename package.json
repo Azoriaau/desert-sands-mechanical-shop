@@ -10,7 +10,8 @@
     "preview": "shopify hydrogen preview --build",
     "lint": "eslint --no-error-on-unmatched-pattern .",
     "typecheck": "react-router typegen && tsc --noEmit",
-    "codegen": "shopify hydrogen codegen && react-router typegen"
+    "codegen": "shopify hydrogen codegen && react-router typegen",
+    "postinstall": "patch-package"
   },
   "prettier": "@shopify/prettier-config",
   "dependencies": {
@@ -56,6 +57,7 @@
     "eslint-plugin-react-hooks": "^5.1.0",
     "globals": "^15.14.0",
     "graphql-config": "^5.0.3",
+    "patch-package": "^8.0.1",
     "prettier": "^3.4.2",
     "typescript": "^5.9.2",
     "vite": "^8.0.1"

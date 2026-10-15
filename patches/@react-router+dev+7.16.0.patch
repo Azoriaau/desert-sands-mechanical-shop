@@ -1,0 +1,62 @@
+diff --git a/node_modules/@react-router/dev/dist/cli/index.js b/node_modules/@react-router/dev/dist/cli/index.js
+index 9dbba86..c8b4de9 100644
+--- a/node_modules/@react-router/dev/dist/cli/index.js
++++ b/node_modules/@react-router/dev/dist/cli/index.js
+@@ -1370,7 +1370,7 @@ var init_generate = __esm({
+ async function clearRouteModuleAnnotations(ctx) {
+   await import_promises.default.rm(
+     Path4.join(typesDirectory(ctx), Path4.basename(ctx.config.appDirectory)),
+-    { recursive: true, force: true }
++    { recursive: true, force: true, maxRetries: 10, retryDelay: 100 }
+   );
+ }
+ async function write(...files) {
+@@ -1383,7 +1383,7 @@ async function write(...files) {
+ }
+ async function run(rootDirectory, { mode, rsc }) {
+   const ctx = await createContext2({ rootDirectory, mode, rsc, watch: false });
+-  await import_promises.default.rm(typesDirectory(ctx), { recursive: true, force: true });
++  await import_promises.default.rm(typesDirectory(ctx), { recursive: true, force: true, maxRetries: 10, retryDelay: 100 });
+   await write(
+     generateFuture(ctx),
+     generateServerBuild(ctx),
+@@ -1392,7 +1392,7 @@ async function run(rootDirectory, { mode, rsc }) {
+ }
+ async function watch(rootDirectory, { mode, logger, rsc }) {
+   const ctx = await createContext2({ rootDirectory, mode, rsc, watch: true });
+-  await import_promises.default.rm(typesDirectory(ctx), { recursive: true, force: true });
++  await import_promises.default.rm(typesDirectory(ctx), { recursive: true, force: true, maxRetries: 10, retryDelay: 100 });
+   await write(
+     generateFuture(ctx),
+     generateServerBuild(ctx),
+diff --git a/node_modules/@react-router/dev/dist/vite.js b/node_modules/@react-router/dev/dist/vite.js
+index 95f0753..8a80b28 100644
+--- a/node_modules/@react-router/dev/dist/vite.js
++++ b/node_modules/@react-router/dev/dist/vite.js
+@@ -1375,7 +1375,7 @@ function expand(fullpath2) {
+ async function clearRouteModuleAnnotations(ctx) {
+   await import_promises.default.rm(
+     Path4.join(typesDirectory(ctx), Path4.basename(ctx.config.appDirectory)),
+-    { recursive: true, force: true }
++    { recursive: true, force: true, maxRetries: 10, retryDelay: 100 }
+   );
+ }
+ async function write(...files) {
+@@ -1388,7 +1388,7 @@ async function write(...files) {
+ }
+ async function watch(rootDirectory, { mode, logger, rsc }) {
+   const ctx = await createContext2({ rootDirectory, mode, rsc, watch: true });
+-  await import_promises.default.rm(typesDirectory(ctx), { recursive: true, force: true });
++  await import_promises.default.rm(typesDirectory(ctx), { recursive: true, force: true, maxRetries: 10, retryDelay: 100 });
+   await write(
+     generateFuture(ctx),
+     generateServerBuild(ctx),
+@@ -3753,7 +3753,7 @@ var reactRouterVitePlugin = () => {
+           cacheDir: "node_modules/.vite-child-compiler",
+           mode: viteConfig.mode,
+           server: {
+-            watch: viteConfig.command === "build" ? null : void 0,
++            watch: viteConfig.command === "build" ? null : { ignored: ["**/.react-router/**"] },
+             preTransformRequests: false,
+             hmr: false
+           },

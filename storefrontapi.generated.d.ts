@@ -1251,7 +1251,7 @@ interface GeneratedQueryTypes {
     return: FooterQuery;
     variables: FooterQueryVariables;
   };
-  '#graphql\n  query HomeCollections($country: CountryCode, $language: LanguageCode)\n    @inContext(country: $country, language: $language) {\n    collections(first: 50, sortKey: TITLE) {\n      nodes {\n        ...CollectionCard\n      }\n    }\n  }\n  #graphql\n  fragment CollectionCard on Collection {\n    id\n    handle\n    title\n    description\n    image {\n      id\n      url\n      altText\n      width\n      height\n    }\n  }\n\n': {
+  '#graphql\n  query HomeCollections($country: CountryCode, $language: LanguageCode)\n    @inContext(country: $country, language: $language) {\n    collections(first: 12, sortKey: TITLE) {\n      nodes {\n        ...CollectionCard\n      }\n    }\n  }\n  #graphql\n  fragment CollectionCard on Collection {\n    id\n    handle\n    title\n    description\n    image {\n      id\n      url\n      altText\n      width\n      height\n    }\n  }\n\n': {
     return: HomeCollectionsQuery;
     variables: HomeCollectionsQueryVariables;
   };

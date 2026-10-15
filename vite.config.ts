@@ -41,5 +41,11 @@ export default defineConfig({
   },
   server: {
     allowedHosts: ['.tryhydrogen.dev'],
+    watch: {
+      // On Windows the watcher keeps directory handles open, which stops
+      // React Router from replacing .react-router/types (the dev server dies
+      // with ENOTEMPTY) and stops builds and deploys from clearing dist.
+      ignored: ['**/.react-router/**', '**/dist/**'],
+    },
   },
 });
